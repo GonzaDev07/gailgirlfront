@@ -1,10 +1,10 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Select, TextField } from "@mui/material";
 import { Formik } from "formik";
-import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../components/Header";
 import axios from 'axios';
 import { useState } from "react";
+import { enviroments } from "../../../../src/env";
 
 
 const Form = () => {
@@ -44,7 +44,7 @@ const Form = () => {
             "clientPhone": null
         }
 
-        axios.post('https://backendgailgir.azurewebsites.net/api/client', formData)
+        axios.post(enviroments.urlBackend + 'client', formData)
         .then((response) => {
             setDNI("")
             setNames("")
@@ -58,7 +58,7 @@ const Form = () => {
     }
 
     const consultarDNI = () => {
-        axios.get('https://backendgailgir.azurewebsites.net/api/client/consultDocument/' + dni,)
+        axios.get(enviroments.urlBackend + 'client/consultDocument/' + dni,)
         .then((response) => {
             setNames(response.data.objModel.clientName)
             setLastnames(response.data.objModel.clientLastname)
@@ -107,9 +107,11 @@ const Form = () => {
                                     helperText={touched.clientDocumentNumber && errors.clientDocumentNumber}
                                     sx={{ gridColumn: "span 2" }}
                                 />
-                                <Button onClick={consultarDNI} color="secondary" variant="contained">
-                                    Consultar numero de Documento
-                                </Button>
+                                <Box display="flex" justifyContent="start">
+                                    <Button onClick={consultarDNI} color="secondary" variant="contained">
+                                        CONSULTAR
+                                    </Button>
+                                </Box>
                                 <TextField
                                     fullWidth
                                     variant="filled"
@@ -162,6 +164,12 @@ const Form = () => {
                                     helperText={touched.clientPhone && errors.clientPhone}
                                     sx={{ gridColumn: "span 2" }}
                                 />
+                                <Select>
+
+                                </Select>
+                                <TextField>
+
+                                </TextField>
                             </Box>
                             <Box display="flex" justifyContent="end" mt="20px">
                                 <Button type="submit" color="secondary" variant="contained">
@@ -179,8 +187,8 @@ const initialValues = {
     clientDocumentNumber: ""
 }
 
-const userSchema = yup.object().shape({
-    clientDocumentNumber: yup.string().required("required")
-})
+// const userSchema = yup.object().shape({
+//     clientDocumentNumber: yup.string().required("required")
+// })
 
 export default Form;

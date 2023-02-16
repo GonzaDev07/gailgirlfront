@@ -1,13 +1,9 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../themes";
-import { mockDataTeam } from "../../data/mockData";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import { enviroments } from "../../env";
 import Header from "../../components/Header";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import { useEffect, useState } from "react";
-import { json } from "react-router-dom";
 
 const Client = () => {
     const theme = useTheme();
@@ -16,20 +12,9 @@ const Client = () => {
     const [data, setData] = useState([])
 
     async function getData(){
-        const req = await fetch("https://backendgailgir.azurewebsites.net/api/client")
+        const req = await fetch(enviroments.urlBackend + "client")
         const json = await req.json()
         setData(json.objModel)
-    }
-
-    async function insertData(url, datos) {
-        const response = await fetch(url,{
-            method:'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datos)
-        });
-        return response.json();
     }
 
     useEffect(() => { 
