@@ -1,9 +1,13 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Button, useTheme, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../themes";
 import { enviroments } from "../../env";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import Swal from 'sweetalert';
 
 const Client = () => {
     const theme = useTheme();
@@ -15,6 +19,15 @@ const Client = () => {
         const req = await fetch(enviroments.urlBackend + "client")
         const json = await req.json()
         setData(json.objModel)
+    }
+    
+    function gola(){
+        Swal({
+            title: 'Hello!',
+            text: 'This is a SweetAlert popup.',
+            icon: 'success',
+            button: 'Aceptar'
+        });
     }
 
     useEffect(() => { 
@@ -50,41 +63,62 @@ const Client = () => {
             headerName: "Telefono",
             flex:1
         },
-        /*
         {
-            field: "access",
-            headerName: "Access Level",
+            field: "actions",
+            headerName: "Acciones",
             flex:1,
-            renderCell: ({ row: { access }}) => {
+            renderCell: () => {
                 return (
                     <Box
-                    width="60%"
-                    m="0 auto"
-                    p="5px"
-                    display="flex"
-                    justifyContent="center"
-                    backgroundColor={
-                        access === "admin"
-                        ? colors.greenAccent[600]
-                        : colors.greenAccent[700]
-                    }
-                    borderRadius="4px"
-                >
-                    {access ==="admin" && <AdminPanelSettingsOutlinedIcon />}
-                    {access ==="manager" && <SecurityOutlinedIcon />}
-                    {access ==="user" && <LockOpenOutlinedIcon />}
-                    <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-                        {access}
-                    </Typography>
-                </Box>
+                        display="grid"
+                        gridTemplateColumns="repeat(2, minmax(0, 1fr))">
+                        <Box
+                            width="60%"
+                            m="0 "
+                            p="1px"
+                            display="flex"
+                            justifyContent="center"
+                            backgroundColor={
+                                colors.greenAccent[600]
+                                }
+                            borderRadius="4px"
+                        >
+                            <Button>
+                                <EditOutlinedIcon/>
+                            </Button>
+                        </Box>
+                        <Box
+                            width="60%"
+                            m="0"
+                            p="1px"
+                            display="flex"
+                            justifyContent="center"
+                            backgroundColor={
+                                colors.redAccent[600]
+                                }
+                            borderRadius="4px"
+                        >
+                            <Button onClick={gola}>
+                                <DeleteOutlineOutlinedIcon/>
+                            </Button>
+                        </Box>
+                    </Box>
                 )
             }
-        }*/
+        }
     ]
 
     return (
         <Box m="20px">
-            <Header title="CLIENT" subtitle="Maneja tus clientes" />
+            <Header title="Clientes" subtitle="Crea, edita y elimina a tus clientes" />
+            <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                    <PersonAddOutlinedIcon />
+                    <Typography color="#000000" sx={{ ml: "8px" }}>
+                        Nuevo cliente
+                    </Typography>
+                </Button>
+            </Box>
             <Box 
                 m="40px 0 0 0" 
                 height="75vh"

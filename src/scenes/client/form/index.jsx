@@ -1,38 +1,22 @@
-import { Box, Button, Select, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-import useMediaQuery from "@mui/material/useMediaQuery";
+//import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../components/Header";
 import axios from 'axios';
 import { useState } from "react";
 import { enviroments } from "../../../../src/env";
+import Swal from 'sweetalert';
 
 
 const Form = () => {
 
-    const [
-        dni, setDNI
-    ] = useState("")
+    const [ dni, setDNI ] = useState("")
+    const [ names, setNames ] = useState("")
+    const [ lastnames, setLastnames ] = useState("")
+    const [ phone, setPhone ] = useState("")
+    const [ address, setAddress ] = useState("")
 
-    const [
-        names, setNames
-    ] = useState("")
-
-    const [
-        lastnames, setLastnames
-    ] = useState("")
-
-    const isNonMobile = useMediaQuery("min-width:600px")
-
-    // async function insertData(url, datos) {
-    //     const response = await fetch(url,{
-    //         method:'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(datos)
-    //     });
-    //     return response.json();
-    // }
+    //const isNonMobile = useMediaQuery("min-width:600px")
 
     const handleFormSubmit = (values) => {
         
@@ -40,8 +24,8 @@ const Form = () => {
             "clientDocumentNumber": dni,
             "clientName": names,
             "clientLastname": lastnames,
-            "clientAddress": null,
-            "clientPhone": null
+            "clientAddress": address,
+            "clientPhone": phone
         }
 
         axios.post(enviroments.urlBackend + 'client', formData)
@@ -49,8 +33,13 @@ const Form = () => {
             setDNI("")
             setNames("")
             setLastnames("")
+            setPhone("")
+            setAddress("")
+            console.log(response)
+            gola("Gracias")
         })
         .catch((error) => {
+            gola(error)
             console.log(error);
         })
 
@@ -68,9 +57,18 @@ const Form = () => {
         })
     }
 
+    function gola(mensaje){
+        Swal({
+            title: 'Hello!',
+            text: mensaje,
+            icon: 'success',
+            button: 'Aceptar'
+        });
+    }
+
     return (
         <Box m="20px">
-            <Header title="Crear nuevo cliente" subtitle="Formulario para crear nuevo cliente" />
+            <Header title="Nuevo cliente" subtitle="Consulta el DNI para el llenado automatico de algunos datos y completa los datos que faltan." />
                 <Formik
                     onSubmit={handleFormSubmit}
                     initialValues={initialValues}
@@ -90,9 +88,9 @@ const Form = () => {
                                 display="grid"
                                 gap="30px"
                                 gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                sx={{
-                                    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-                                }}
+                                // sx={{
+                                //     "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                                // }}
                             >
                                 <TextField
                                     fullWidth
@@ -118,7 +116,7 @@ const Form = () => {
                                     type="text"
                                     label="Nombres"
                                     onBlur={handleBlur}
-                                    onChange={handleChange}
+                                    onChange={(e) => {setNames(e.target.value)}}
                                     value={names}
                                     name="clientName"
                                     error={!!touched.clientName && !!errors.clientName}
@@ -131,7 +129,7 @@ const Form = () => {
                                     type="text"
                                     label="Apellidos"
                                     onBlur={handleBlur}
-                                    onChange={handleChange}
+                                    onChange={(e) => {setLastnames(e.target.value)}}
                                     value={lastnames}
                                     name="clientLastname"
                                     error={!!touched.clientLastname && !!errors.clientLastname}
@@ -142,34 +140,28 @@ const Form = () => {
                                     fullWidth
                                     variant="filled"
                                     type="text"
-                                    label="Dirección"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.clientAddress}
-                                    name="clientAddress"
-                                    error={!!touched.clientAddress && !!errors.clientAddress}
-                                    helperText={touched.clientAddress && errors.clientAddress}
-                                    sx={{ gridColumn: "span 2" }}
-                                />
-                                <TextField
-                                    fullWidth
-                                    variant="filled"
-                                    type="text"
                                     label="Número de teléfono"
                                     onBlur={handleBlur}
-                                    onChange={handleChange}
+                                    onChange={(e) => {setPhone(e.target.value)}}
                                     value={values.clientPhone}
                                     name="clientPhone"
                                     error={!!touched.clientPhone && !!errors.clientPhone}
                                     helperText={touched.clientPhone && errors.clientPhone}
                                     sx={{ gridColumn: "span 2" }}
                                 />
-                                <Select>
-
-                                </Select>
-                                <TextField>
-
-                                </TextField>
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="text"
+                                    label="Dirección"
+                                    onBlur={handleBlur}
+                                    onChange={(e) => {setAddress(e.target.value)}}
+                                    value={values.clientAddress}
+                                    name="clientAddress"
+                                    error={!!touched.clientAddress && !!errors.clientAddress}
+                                    helperText={touched.clientAddress && errors.clientAddress}
+                                    sx={{ gridColumn: "span 4" }}
+                                />
                             </Box>
                             <Box display="flex" justifyContent="end" mt="20px">
                                 <Button type="submit" color="secondary" variant="contained">

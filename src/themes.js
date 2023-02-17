@@ -1,7 +1,5 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
-import { color } from "@mui/system";
-import { ColorizeSharp } from "@mui/icons-material";
 
 // color design tokens
 
