@@ -136,13 +136,6 @@ const Sidebar = () => {
                           selected={selected}
                           setSelected={setSelected}
                         />
-                        <Item
-                          title="Crear Cliente"
-                          to="/createClient"
-                          icon={<PeopleOutlinedIcon />}
-                          selected={selected}
-                          setSelected={setSelected}
-                        />
                         <Typography
                             variant="h6"
                             color={colors.grey[300]}

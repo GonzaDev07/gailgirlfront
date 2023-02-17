@@ -5,7 +5,16 @@ import Header from "../../../components/Header";
 import axios from 'axios';
 import { useState } from "react";
 import { enviroments } from "../../../../src/env";
-import Swal from 'sweetalert';
+import Alerts from "../../../components/Alert";
+
+const SavedClient = () => {
+    Alerts.SuccessAlert(
+        {
+            title:'Éxito!', 
+            text: 'Datos guardados exitosamente',
+            textButton:'Aceptar'
+        })
+}
 
 
 const Form = () => {
@@ -35,11 +44,9 @@ const Form = () => {
             setLastnames("")
             setPhone("")
             setAddress("")
-            console.log(response)
-            gola("Gracias")
+            SavedClient();
         })
         .catch((error) => {
-            gola(error)
             console.log(error);
         })
 
@@ -55,15 +62,6 @@ const Form = () => {
         .catch((error) => {
             console.log(error);
         })
-    }
-
-    function gola(mensaje){
-        Swal({
-            title: 'Hello!',
-            text: mensaje,
-            icon: 'success',
-            button: 'Aceptar'
-        });
     }
 
     return (
@@ -143,7 +141,7 @@ const Form = () => {
                                     label="Número de teléfono"
                                     onBlur={handleBlur}
                                     onChange={(e) => {setPhone(e.target.value)}}
-                                    value={values.clientPhone}
+                                    value={phone}
                                     name="clientPhone"
                                     error={!!touched.clientPhone && !!errors.clientPhone}
                                     helperText={touched.clientPhone && errors.clientPhone}
@@ -156,7 +154,7 @@ const Form = () => {
                                     label="Dirección"
                                     onBlur={handleBlur}
                                     onChange={(e) => {setAddress(e.target.value)}}
-                                    value={values.clientAddress}
+                                    value={address}
                                     name="clientAddress"
                                     error={!!touched.clientAddress && !!errors.clientAddress}
                                     helperText={touched.clientAddress && errors.clientAddress}

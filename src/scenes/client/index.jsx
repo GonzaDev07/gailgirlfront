@@ -7,9 +7,12 @@ import { useEffect, useState } from "react";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import Swal from 'sweetalert';
+import React from 'react';
+import Modal from '@mui/material/Modal';
+import Form from "../client/form/index";
 
 const Client = () => {
+
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -19,15 +22,6 @@ const Client = () => {
         const req = await fetch(enviroments.urlBackend + "client")
         const json = await req.json()
         setData(json.objModel)
-    }
-    
-    function gola(){
-        Swal({
-            title: 'Hello!',
-            text: 'This is a SweetAlert popup.',
-            icon: 'success',
-            button: 'Aceptar'
-        });
     }
 
     useEffect(() => { 
@@ -98,7 +92,7 @@ const Client = () => {
                                 }
                             borderRadius="4px"
                         >
-                            <Button onClick={gola}>
+                            <Button>
                                 <DeleteOutlineOutlinedIcon/>
                             </Button>
                         </Box>
@@ -108,11 +102,30 @@ const Client = () => {
         }
     ]
 
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        bgcolor: colors.blueAccent[900],
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+    
+        const [open, setOpen] = React.useState(false);
+        const handleOpen = () => setOpen(true);
+        const handleClose = () => {
+            setOpen(false);
+            getData();
+        }
+
     return (
         <Box m="20px">
             <Header title="Clientes" subtitle="Crea, edita y elimina a tus clientes" />
             <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained">
+                <Button type="submit" color="secondary" variant="contained" onClick={handleOpen}>
                     <PersonAddOutlinedIcon />
                     <Typography color="#000000" sx={{ ml: "8px" }}>
                         Nuevo cliente
@@ -146,6 +159,20 @@ const Client = () => {
                 }}
             >
                 <DataGrid rows={data} columns={columns} />
+            </Box>
+
+            <Box m="20px">
+                {/* <Button variant="contained" onClick={handleOpen}>Open modal</Button> */}
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={modalStyle}>
+                    <Form/>
+                  </Box>
+                </Modal>
             </Box>
         </Box>
     )
