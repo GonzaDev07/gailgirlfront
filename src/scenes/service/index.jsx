@@ -17,6 +17,12 @@ import Alerts from "../../../src/components/Alert";
 
 const Service = () => {
 
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const [data, setData] = useState([])
+    const [titlesForm, setTitlesForm] = useState({})
+    const [ dataToSend, setDataToSend ] = useState({});
+
     const DeletedService = () => {
         Alerts.SuccessAlert(
             {
@@ -25,8 +31,37 @@ const Service = () => {
                 textButton:'Aceptar'
             })
     }
+
+    const CreateService = () => {
+        setOpen(true);
+        setDataToSend({
+            "id": 0,
+            "serviceName": "",
+            "serviceDescription": "",
+            "servicePrice": "",
+            "serviceEstimatedTime": ""
+        });
+        setTitlesForm({
+            title: 'Cerar servicio',
+            description: 'Formulario para crear servicio',
+            formType: 1,
+            formTypeDescription: 'Form to cerate',
+            alertMessage: 'Datos creados exitosamente',
+            formButtonText: 'CREAR'
+        })
+    }
     
     const EditService = (item) => {
+        setOpen(true);
+        setDataToSend(item);
+        setTitlesForm({
+            title: 'Editar servicio',
+            description: 'Formulario para editar servicio',
+            formType: 2,
+            formTypeDescription: 'Form to update',
+            alertMessage: 'Datos actualizados exitosamente',
+            formButtonText: 'ACTUALIZAR'
+        })
     }
     
     const DeleteService = (id) => {
@@ -53,11 +88,6 @@ const Service = () => {
           })
           
     }
-
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-
-    const [data, setData] = useState([])
 
     async function getData(){
         const req = await fetch(enviroments.urlBackend + "service")
@@ -166,7 +196,6 @@ const Service = () => {
     };
     
         const [open, setOpen] = React.useState(false);
-        const handleOpen = (data) => setOpen(true, data);
         const handleClose = () => {
             setOpen(false);
             getData();
@@ -177,7 +206,7 @@ const Service = () => {
         <Box m="20px">
             <Header title="Servicios" subtitle="Crea, edita y elimina tus servicios" />
             <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained" onClick={handleOpen}>
+                <Button type="submit" color="secondary" variant="contained" onClick={CreateService}>
                     <AddOutlinedIcon />
                     <Typography color="#000000" sx={{ ml: "8px" }}>
                         Nuevo servicio
@@ -222,7 +251,7 @@ const Service = () => {
                   aria-describedby="modal-modal-description"
                 >
                   <Box sx={modalStyle}>
-                    <ServiceForm onClose={handleClose} open={open}/>
+                    <ServiceForm onClose={handleClose} formTypeAndData={{dataToSend, titlesForm}}/>
                   </Box>
                 </Modal>
             </Box>

@@ -159,7 +159,7 @@ const Sidebar = () => {
                           setSelected={setSelected}
                         />
                         <Item
-                          title="Estado de mis citas"
+                          title="Estados"
                           to="/meetingStatus"
                           icon={<PinOutlinedIcon />}
                           selected={selected}
@@ -167,7 +167,7 @@ const Sidebar = () => {
                         />
                         <Item
                           title="Trabajadores"
-                          to="/meetingStatus"
+                          to="/team"
                           icon={<GroupsOutlinedIcon />}
                           selected={selected}
                           setSelected={setSelected}

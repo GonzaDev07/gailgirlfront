@@ -5,8 +5,9 @@ import { enviroments } from "../../env";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import React from 'react';
 import Modal from '@mui/material/Modal';
 import Form from "../client/form/index";
@@ -18,6 +19,7 @@ const Client = () => {
 
     const [data, setData] = useState([])
     const [titlesForm, setTitlesForm] = useState({})
+    const [ dataToUpdate, setDataToUpdate ] = useState({});
 
     async function getData(){
         const req = await fetch(enviroments.urlBackend + "client")
@@ -25,7 +27,7 @@ const Client = () => {
         setData(json.objModel)
     }
     
-    const EditService = (item) => {
+    const EditClient = (item) => {
         setOpen(true);
         setDataToUpdate(item)
         setTitlesForm({
@@ -39,7 +41,7 @@ const Client = () => {
         })
     }
 
-    const CreateService = () => {
+    const CreateClient = () => {
         setOpen(true);
         setDataToUpdate({
             "id": 0,
@@ -102,7 +104,7 @@ const Client = () => {
                 return (
                     <Box
                         display="grid"
-                        gridTemplateColumns="repeat(2, minmax(0, 1fr))">
+                        gridTemplateColumns="repeat(3, minmax(0, 1fr))">
                         <Box
                             width="60%"
                             m="0 "
@@ -114,7 +116,7 @@ const Client = () => {
                                 }
                             borderRadius="4px"
                         >
-                            <Button onClick={() => EditService(row)}>
+                            <Button onClick={() => EditClient(row)}>
                                 <EditOutlinedIcon/>
                             </Button>
                         </Box>
@@ -125,12 +127,27 @@ const Client = () => {
                             display="flex"
                             justifyContent="center"
                             backgroundColor={
-                                colors.redAccent[600]
+                                colors.redAccent[400]
                                 }
                             borderRadius="4px"
                         >
                             <Button>
-                                <DeleteOutlineOutlinedIcon/>
+                                <PersonOffOutlinedIcon/>
+                            </Button>
+                        </Box>
+                        <Box
+                            width="60%"
+                            m="0"
+                            p="1px"
+                            display="flex"
+                            justifyContent="center"
+                            backgroundColor={
+                                colors.blueAccent[400]
+                                }
+                            borderRadius="4px"
+                        >
+                            <Button>
+                                <CalendarMonthOutlinedIcon/>
                             </Button>
                         </Box>
                     </Box>
@@ -153,7 +170,6 @@ const Client = () => {
     };
     
         const [open, setOpen] =  React.useState(false);
-        const [ dataToUpdate, setDataToUpdate ] = useState({});
         const handleClose = () => {
             setOpen(false);
             getData();
@@ -163,7 +179,7 @@ const Client = () => {
         <Box m="20px">
             <Header title="Clientes" subtitle="Crea, edita y elimina a tus clientes" />
             <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained" onClick={CreateService}>
+                <Button type="submit" color="secondary" variant="contained" onClick={CreateClient}>
                     <PersonAddOutlinedIcon />
                     <Typography color="#000000" sx={{ ml: "8px" }}>
                         Nuevo cliente

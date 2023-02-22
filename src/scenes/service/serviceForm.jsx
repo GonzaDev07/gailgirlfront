@@ -7,13 +7,24 @@ import { useState } from "react";
 import { enviroments } from "../../../src/env";
 import Alerts from "../../components/Alert";
 
-const Form = ({onClose, open}) => {
+const Form = ({onClose, formTypeAndData}) => {
 
-    const SavedService = () => {
+    console.log(formTypeAndData);
+
+    const receivedData = formTypeAndData.dataToSend;
+    const formAttributes = formTypeAndData.titlesForm;
+
+    const [ id ] = useState(receivedData.id)
+    const [ serviceName, setServiceName ] = useState(receivedData.serviceName)
+    const [ serviceDescription, setServiceDescription ] = useState(receivedData.serviceDescription)
+    const [ servicePrice, setServicePrice ] = useState(receivedData.servicePrice)
+    const [ serviceEstimatedTime, setServiceEstimatedTime ] = useState(receivedData.serviceEstimatedTime)
+
+    const SavedService = (message) => {
         Alerts.SuccessAlert(
             {
                 title:'Éxito!', 
-                text: 'Datos guardados exitosamente',
+                text: message,
                 textButton:'Aceptar'
             })
         onClose();
@@ -27,40 +38,44 @@ const Form = ({onClose, open}) => {
                 textButton:'Aceptar'
             })
     }
-    const [ serviceName, setServiceName ] = useState("")
-    const [ serviceDescription, setServiceDescription ] = useState("")
-    const [ servicePrice, setServicePrice ] = useState("")
-    const [ serviceEstimatedTime, setServiceEstimatedTime ] = useState("")
 
-    //const isNonMobile = useMediaQuery("min-width:600px")
+    const CreateService = (formData) => {
+        axios.post(enviroments.urlBackend + 'service', formData)
+        .then((response) => {
+            SavedService(formAttributes.alertMessage);
+        })
+        .catch((error) => {
+            ErrorService(error.response.data.description);
+        })
+    }
+
+    const UpdateService = (formData) => {
+        axios.put(enviroments.urlBackend + 'service', formData)
+        .then((response) => {
+            SavedService(formAttributes.alertMessage);
+        })
+        .catch((error) => {
+            ErrorService(error.response.data.description);
+        })
+    }
 
     const handleFormSubmit = (values) => {
         
         const formData = {
+            "id": id,
             "serviceName": serviceName,
             "serviceDescription": serviceDescription,
             "servicePrice": parseFloat(servicePrice),
             "serviceEstimatedTime": parseFloat(serviceEstimatedTime)
         }
 
-        axios.post(enviroments.urlBackend + 'service', formData)
-        .then((response) => {
-            setServiceName("")
-            setServiceDescription("")
-            setServicePrice("")
-            setServiceEstimatedTime("")
-            SavedService();
-        })
-        .catch((error) => {
-            ErrorService();
-        })
-
-        console.log(formData)
+        formAttributes.formType === 1 && CreateService(formData);
+        formAttributes.formType === 2 && UpdateService(formData);
     }
 
     return (
         <Box m="20px">
-            <Header title="Nuevo servicio" subtitle="Crea un nuevo servicio, no te olvides de completar todos los datos." />
+            <Header title={formAttributes.title} subtitle={formAttributes.description} />
                 <Formik
                     onSubmit={handleFormSubmit}
                     initialValues={initialValues}
@@ -139,7 +154,7 @@ const Form = ({onClose, open}) => {
                             </Box>
                             <Box display="flex" justifyContent="end" mt="20px">
                                 <Button type="submit" color="secondary" variant="contained">
-                                    Crear
+                                    {formAttributes.formButtonText}
                                 </Button>
                             </Box>
                         </form>
