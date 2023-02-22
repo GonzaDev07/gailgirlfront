@@ -10,6 +10,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 import PinOutlinedIcon from '@mui/icons-material/PinOutlined';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -145,7 +146,7 @@ const Sidebar = () => {
                         </Typography>
                         <Item
                           title="Servicios"
-                          to="/services"
+                          to="/service"
                           icon={<MiscellaneousServicesOutlinedIcon />}
                           selected={selected}
                           setSelected={setSelected}
@@ -161,6 +162,13 @@ const Sidebar = () => {
                           title="Estado de mis citas"
                           to="/meetingStatus"
                           icon={<PinOutlinedIcon />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                        <Item
+                          title="Trabajadores"
+                          to="/meetingStatus"
+                          icon={<GroupsOutlinedIcon />}
                           selected={selected}
                           setSelected={setSelected}
                         />

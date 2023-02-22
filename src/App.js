@@ -5,6 +5,7 @@ import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Client from "./scenes/client";
+import Service from "./scenes/service";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -20,6 +21,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/client" element={<Client />} />
+              <Route path="/service" element={<Service />} />
             </Routes>
           </main>
         </div>

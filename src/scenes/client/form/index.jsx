@@ -7,29 +7,84 @@ import { useState } from "react";
 import { enviroments } from "../../../../src/env";
 import Alerts from "../../../components/Alert";
 
-const SavedClient = () => {
-    Alerts.SuccessAlert(
-        {
-            title:'Éxito!', 
-            text: 'Datos guardados exitosamente',
-            textButton:'Aceptar'
+
+const Form = ({onClose, formTypeAndData}) => {
+
+    console.log(formTypeAndData)
+
+    const [ id, setId ] = useState(formTypeAndData.dataToUpdate.id)
+    const [ dni, setDNI ] = useState(formTypeAndData.dataToUpdate.clientDocumentNumber)
+    const [ names, setNames ] = useState(formTypeAndData.dataToUpdate.clientName)
+    const [ lastnames, setLastnames ] = useState(formTypeAndData.dataToUpdate.clientLastname)
+    const [ phone, setPhone ] = useState(formTypeAndData.dataToUpdate.clientPhone)
+    const [ address, setAddress ] = useState(formTypeAndData.dataToUpdate.clientAddress)
+
+    const [showButton, setShowButton] = useState(formTypeAndData.titlesForm.searchDNIButton);
+
+    const SavedClient = (text) => {
+        Alerts.SuccessAlert(
+            {
+                title:'Éxito!', 
+                text: text,
+                textButton:'Aceptar'
+            })
+        onClose()
+    }
+    
+    const NoSavedClient = (message) => {
+        Alerts.ErrorAlert(
+            {
+                title:'Lo sentimos!', 
+                text: message,
+                textButton:'Aceptar'
+            })
+        onClose()
+    }
+
+    const NotFoundDocument = (message) => {
+        Alerts.WarningAlert(
+            {
+                title:'Sin datos',
+                text: message,
+                textButton:'Aceptar'
+            });
+        setDNI("");
+    }
+
+    const ExistingCustomer = (message) => {
+        Alerts.WarningAlert(
+            {
+                title:'Sin datos',
+                text: message,
+                textButton:'Aceptar'
+            });
+        onClose()
+    }
+
+    const CreateCient = (formData) => {
+        axios.post(enviroments.urlBackend + 'client', formData)
+        .then((response) => {
+            SavedClient(formTypeAndData.titlesForm.alertMessage);
         })
-}
+        .catch((error) => {
+            NoSavedClient(error.response.data.description);
+        })
+    }
 
-
-const Form = () => {
-
-    const [ dni, setDNI ] = useState("")
-    const [ names, setNames ] = useState("")
-    const [ lastnames, setLastnames ] = useState("")
-    const [ phone, setPhone ] = useState("")
-    const [ address, setAddress ] = useState("")
-
-    //const isNonMobile = useMediaQuery("min-width:600px")
+    const UpdateClient = (formData) => {
+        axios.put(enviroments.urlBackend + 'client', formData)
+        .then((response) => {
+            SavedClient(formTypeAndData.titlesForm.alertMessage);
+        })
+        .catch((error) => {
+            NoSavedClient(error.response.data.description);
+        })
+    }
 
     const handleFormSubmit = (values) => {
         
         const formData = {
+            "id": id,
             "clientDocumentNumber": dni,
             "clientName": names,
             "clientLastname": lastnames,
@@ -37,20 +92,8 @@ const Form = () => {
             "clientPhone": phone
         }
 
-        axios.post(enviroments.urlBackend + 'client', formData)
-        .then((response) => {
-            setDNI("")
-            setNames("")
-            setLastnames("")
-            setPhone("")
-            setAddress("")
-            SavedClient();
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-
-        console.log(formData)
+        formTypeAndData.titlesForm.formType === 1 && CreateCient(formData);
+        formTypeAndData.titlesForm.formType === 2 && UpdateClient(formData);
     }
 
     const consultarDNI = () => {
@@ -60,13 +103,15 @@ const Form = () => {
             setLastnames(response.data.objModel.clientLastname)
         })
         .catch((error) => {
-            console.log(error);
+            const errorMessage = error.response.data.description;
+            errorMessage === "El numero de documento no tiene datos" && NotFoundDocument(errorMessage);
+            errorMessage === "El cliente ya existe en el sistema" && ExistingCustomer(errorMessage);
         })
     }
 
     return (
         <Box m="20px">
-            <Header title="Nuevo cliente" subtitle="Consulta el DNI para el llenado automatico de algunos datos y completa los datos que faltan." />
+            <Header title={formTypeAndData.titlesForm.title} subtitle={formTypeAndData.titlesForm.description} />
                 <Formik
                     onSubmit={handleFormSubmit}
                     initialValues={initialValues}
@@ -103,11 +148,12 @@ const Form = () => {
                                     helperText={touched.clientDocumentNumber && errors.clientDocumentNumber}
                                     sx={{ gridColumn: "span 2" }}
                                 />
+                                {showButton && (
                                 <Box display="flex" justifyContent="start">
                                     <Button onClick={consultarDNI} color="secondary" variant="contained">
                                         CONSULTAR
                                     </Button>
-                                </Box>
+                                </Box>)}
                                 <TextField
                                     fullWidth
                                     variant="filled"
@@ -163,7 +209,7 @@ const Form = () => {
                             </Box>
                             <Box display="flex" justifyContent="end" mt="20px">
                                 <Button type="submit" color="secondary" variant="contained">
-                                    Crear
+                                    {formTypeAndData.titlesForm.formButtonText}
                                 </Button>
                             </Box>
                         </form>

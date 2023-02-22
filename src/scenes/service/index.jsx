@@ -4,95 +4,108 @@ import { tokens } from "../../themes";
 import { enviroments } from "../../env";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import React from 'react';
 import Modal from '@mui/material/Modal';
-import Form from "../client/form/index";
+import ServiceForm from "./serviceForm";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import Alerts from "../../../src/components/Alert";
 
-const Client = () => {
+
+const Service = () => {
+
+    const DeletedService = () => {
+        Alerts.SuccessAlert(
+            {
+                title:'Éxito!', 
+                text: 'Servicio eliminado satisfactoriamente',
+                textButton:'Aceptar'
+            })
+    }
+    
+    const EditService = (item) => {
+    }
+    
+    const DeleteService = (id) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(enviroments.urlBackend + 'service/' + id)
+                        .then((response) => {
+                            DeletedService()
+                            getData()
+                        })
+                        .catch((error) => {
+                        })
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              // Acción cuando se hace clic en el botón "Cancelar" o se hace clic fuera de la alerta
+            }
+          })
+          
+    }
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const [data, setData] = useState([])
-    const [titlesForm, setTitlesForm] = useState({})
 
     async function getData(){
-        const req = await fetch(enviroments.urlBackend + "client")
+        const req = await fetch(enviroments.urlBackend + "service")
         const json = await req.json()
         setData(json.objModel)
-    }
-    
-    const EditService = (item) => {
-        setOpen(true);
-        setDataToUpdate(item)
-        setTitlesForm({
-            title: 'Editar cliente',
-            description: 'Formulario para editar al cliente',
-            formType: 2,
-            formTypeDescription: 'Form to update',
-            alertMessage: 'Datos actualizados exitosamente',
-            formButtonText: 'ACTUALIZAR',
-            searchDNIButton: false
-        })
-    }
-
-    const CreateService = () => {
-        setOpen(true);
-        setDataToUpdate({
-            "id": 0,
-            "clientDocumentNumber": "",
-            "clientName": "",
-            "clientLastname": "",
-            "clientAddress": "",
-            "clientPhone": ""
-        })
-        setTitlesForm({
-            title: 'Nuevo cliente',
-            description: 'Consulta el DNI para el llenado automatico de algunos datos y completa los datos que faltan',
-            formType: 1,
-            formTypeDescription: 'Form to create',
-            alertMessage: 'Datos guardados existosamente',
-            formButtonText: 'CREAR',
-            searchDNIButton: true
-        })
     }
 
     useEffect(() => { 
         getData();
-    }, [] ) 
+    }, [] )
 
     const columns = [
         { 
             field: "id", 
-            headerName: "ID Cliente"
-        },
+            headerName: "ID Servicio"},
         {
-            field: "clientDocumentNumber",
-            headerName: "Numero Documento",
+            field: "serviceName",
+            headerName: "Servicio",
             flex:1
         },
         {
-            field: "clientName",
-            headerName: "Nombres",
+            field: "serviceDescription",
+            headerName: "Descripción del servicio",
             flex:1
         },
         {
-            field: "clientLastname",
-            headerName: "Apellidos",
-            flex:1
+            field: "servicePrice",
+            headerName: "Precio (En soles)",
+            flex:1,
+            renderCell: ({ row: {servicePrice} }) => {
+                return (
+                    <Typography>
+                        S/ {servicePrice}
+                    </Typography>
+                )
+            }
         },
         {
-            field: "clientAddress",
-            headerName: "Dirección",
-            flex:1
-        },
-        {
-            field: "clientPhone",
-            headerName: "Telefono",
-            flex:1
+            field: "serviceEstimatedTime",
+            headerName: "Tiempo estimado (Minutos)",
+            flex:1,
+            renderCell: ({ row: {serviceEstimatedTime} }) => {
+                return (
+                    <Typography>
+                        {serviceEstimatedTime} minutos
+                    </Typography>
+                )
+            }
         },
         {
             field: "actions",
@@ -129,7 +142,7 @@ const Client = () => {
                                 }
                             borderRadius="4px"
                         >
-                            <Button>
+                            <Button onClick={() => DeleteService(row.id)}>
                                 <DeleteOutlineOutlinedIcon/>
                             </Button>
                         </Box>
@@ -148,25 +161,26 @@ const Client = () => {
         bgcolor: colors.blueAccent[900],
         border: '2px solid #000',
         boxShadow: 24,
-        borderRadius:'20px',
         p: 4,
+        borderRadius:'20px'
     };
     
-        const [open, setOpen] =  React.useState(false);
-        const [ dataToUpdate, setDataToUpdate ] = useState({});
+        const [open, setOpen] = React.useState(false);
+        const handleOpen = (data) => setOpen(true, data);
         const handleClose = () => {
             setOpen(false);
             getData();
         }
 
+
     return (
         <Box m="20px">
-            <Header title="Clientes" subtitle="Crea, edita y elimina a tus clientes" />
+            <Header title="Servicios" subtitle="Crea, edita y elimina tus servicios" />
             <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained" onClick={CreateService}>
-                    <PersonAddOutlinedIcon />
+                <Button type="submit" color="secondary" variant="contained" onClick={handleOpen}>
+                    <AddOutlinedIcon />
                     <Typography color="#000000" sx={{ ml: "8px" }}>
-                        Nuevo cliente
+                        Nuevo servicio
                     </Typography>
                 </Button>
             </Box>
@@ -208,7 +222,7 @@ const Client = () => {
                   aria-describedby="modal-modal-description"
                 >
                   <Box sx={modalStyle}>
-                    <Form onClose={handleClose} formTypeAndData={{dataToUpdate,titlesForm}}/>
+                    <ServiceForm onClose={handleClose} open={open}/>
                   </Box>
                 </Modal>
             </Box>
@@ -216,4 +230,4 @@ const Client = () => {
     )
 }
 
-export default Client;
+export default Service;
