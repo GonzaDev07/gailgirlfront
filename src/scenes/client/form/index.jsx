@@ -54,7 +54,7 @@ const Form = ({onClose, formTypeAndData}) => {
     const ExistingCustomer = (message) => {
         Alerts.WarningAlert(
             {
-                title:'Sin datos',
+                title:'Busca bien!',
                 text: message,
                 textButton:'Aceptar'
             });
