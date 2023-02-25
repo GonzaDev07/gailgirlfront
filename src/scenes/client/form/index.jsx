@@ -12,21 +12,20 @@ const Form = ({onClose, formTypeAndData}) => {
 
     console.log(formTypeAndData)
 
-    const [ id, setId ] = useState(formTypeAndData.dataToUpdate.id)
+    const [ id ] = useState(formTypeAndData.dataToUpdate.id)
     const [ dni, setDNI ] = useState(formTypeAndData.dataToUpdate.clientDocumentNumber)
     const [ names, setNames ] = useState(formTypeAndData.dataToUpdate.clientName)
     const [ lastnames, setLastnames ] = useState(formTypeAndData.dataToUpdate.clientLastname)
     const [ phone, setPhone ] = useState(formTypeAndData.dataToUpdate.clientPhone)
     const [ address, setAddress ] = useState(formTypeAndData.dataToUpdate.clientAddress)
 
-    const [showButton, setShowButton] = useState(formTypeAndData.titlesForm.searchDNIButton);
+    const [showButton] = useState(formTypeAndData.titlesForm.searchDNIButton);
 
     const SavedClient = (text) => {
         Alerts.SuccessAlert(
             {
                 title:'Éxito!', 
-                text: text,
-                textButton:'Aceptar'
+                text: text
             })
         onClose()
     }
@@ -35,8 +34,7 @@ const Form = ({onClose, formTypeAndData}) => {
         Alerts.ErrorAlert(
             {
                 title:'Lo sentimos!', 
-                text: message,
-                textButton:'Aceptar'
+                text: message
             })
         onClose()
     }

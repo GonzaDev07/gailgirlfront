@@ -1,20 +1,18 @@
 import Swal from 'sweetalert2';
 
-const SuccessAlert = ({title, text, textButton}) => {
+const SuccessAlert = ({title, text}) => {
     Swal.fire({
         icon: 'success',
         title: title,
-        text: text,
-        button: textButton
+        text: text
     });
 }
 
-const ErrorAlert = ({title, text, textButton}) => {
+const ErrorAlert = ({title, text}) => {
     Swal.fire({
         icon: 'error',
         title: title,
-        text: text,
-        button: textButton
+        text: text
     });
 }
 

@@ -11,6 +11,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import React from 'react';
 import Modal from '@mui/material/Modal';
 import Form from "../client/form/index";
+import { useNavigate } from "react-router-dom";
 
 const Client = () => {
 
@@ -20,6 +21,7 @@ const Client = () => {
     const [data, setData] = useState([])
     const [titlesForm, setTitlesForm] = useState({})
     const [ dataToUpdate, setDataToUpdate ] = useState({});
+    const navigate = useNavigate();
 
     async function getData(){
         const req = await fetch(enviroments.urlBackend + "client")
@@ -40,6 +42,10 @@ const Client = () => {
             searchDNIButton: false
         })
     }
+
+    function DateSchedule(item) {
+        navigate('/meetingForm', { state: { item } });
+      }
 
     const CreateClient = () => {
         setOpen(true);
@@ -146,7 +152,7 @@ const Client = () => {
                                 }
                             borderRadius="4px"
                         >
-                            <Button>
+                            <Button onClick={() => DateSchedule(row)}>
                                 <CalendarMonthOutlinedIcon/>
                             </Button>
                         </Box>

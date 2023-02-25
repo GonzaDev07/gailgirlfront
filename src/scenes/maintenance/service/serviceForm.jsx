@@ -1,13 +1,12 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-//import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import axios from 'axios';
 import { useState } from "react";
-import { enviroments } from "../../../src/env";
-import Alerts from "../../components/Alert";
+import { enviroments } from "../../../env";
+import Alerts from "../../../components/Alert";
 
-const Form = ({onClose, formTypeAndData}) => {
+const ServiceForm = ({onClose, formTypeAndData}) => {
 
     console.log(formTypeAndData);
 
@@ -24,18 +23,16 @@ const Form = ({onClose, formTypeAndData}) => {
         Alerts.SuccessAlert(
             {
                 title:'Éxito!', 
-                text: message,
-                textButton:'Aceptar'
+                text: message
             })
         onClose();
     }
     
-    const ErrorService = () => {
+    const ErrorService = (message) => {
         Alerts.ErrorAlert(
             {
-                title:'Éxito!', 
-                text: 'Datos guardados exitosamente',
-                textButton:'Aceptar'
+                title:'Lo sentimos!', 
+                text: message
             })
     }
 
@@ -168,4 +165,4 @@ const initialValues = {
     clientDocumentNumber: ""
 }
 
-export default Form;
+export default ServiceForm;

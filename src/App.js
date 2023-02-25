@@ -5,8 +5,12 @@ import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Client from "./scenes/client";
-import Service from "./scenes/service";
-import Team from "./scenes/team/indexTeam";
+import Service from "./scenes/maintenance/service";
+import Team from "./scenes/maintenance/team/indexTeam";
+import PaymentMethod from "./scenes/maintenance/paymentMethod";
+import MeetingStatus from "./scenes/maintenance/meetingStatus";
+import Meeting from "./scenes/meeting";
+import MeetingForm from "./scenes/meeting/meetingForm";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -23,7 +27,10 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/client" element={<Client />} />
               <Route path="/service" element={<Service />} />
+              <Route path="/paymentMethod" element={<PaymentMethod />} />
+              <Route path="/meetingStatus" element={<MeetingStatus />} />
               <Route path="/team" element={<Team />} />
+              <Route path="/meetingForm" element={<MeetingForm />} />
             </Routes>
           </main>
         </div>

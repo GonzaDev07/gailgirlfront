@@ -1,19 +1,18 @@
 import { Box, Button, useTheme, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../../themes";
-import { enviroments } from "../../env";
-import Header from "../../components/Header";
+import { tokens } from "../../../themes";
+import { enviroments } from "../../../env";
+import Header from "../../../components/Header";
 import { useEffect, useState } from "react";
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import React from 'react';
 import Modal from '@mui/material/Modal';
-import ServiceForm from "./serviceForm";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import Alerts from "../../../src/components/Alert";
-
+import Alerts from "../../../components/Alert";
+import ServiceForm from "../service/serviceForm";
 
 const Service = () => {
 
@@ -22,13 +21,18 @@ const Service = () => {
     const [data, setData] = useState([])
     const [titlesForm, setTitlesForm] = useState({})
     const [ dataToSend, setDataToSend ] = useState({});
+    const [open, setOpen] = React.useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+        getData();
+    }
 
     const DeletedService = () => {
         Alerts.SuccessAlert(
             {
                 title:'Éxito!', 
-                text: 'Servicio eliminado satisfactoriamente',
-                textButton:'Aceptar'
+                text: 'Servicio eliminado satisfactoriamente'
             })
     }
 
@@ -42,7 +46,7 @@ const Service = () => {
             "serviceEstimatedTime": ""
         });
         setTitlesForm({
-            title: 'Cerar servicio',
+            title: 'Crear servicio',
             description: 'Formulario para crear servicio',
             formType: 1,
             formTypeDescription: 'Form to cerate',
@@ -194,13 +198,6 @@ const Service = () => {
         p: 4,
         borderRadius:'20px'
     };
-    
-        const [open, setOpen] = React.useState(false);
-        const handleClose = () => {
-            setOpen(false);
-            getData();
-        }
-
 
     return (
         <Box m="20px">
