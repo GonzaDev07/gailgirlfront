@@ -5,13 +5,14 @@ import { enviroments } from "../../env";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
+// import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import React from 'react';
 import Modal from '@mui/material/Modal';
 import Form from "../client/form/index";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 const Client = () => {
 
@@ -20,15 +21,17 @@ const Client = () => {
 
     const [data, setData] = useState([])
     const [titlesForm, setTitlesForm] = useState({})
-    const [ dataToUpdate, setDataToUpdate ] = useState({});
+    const [dataToUpdate, setDataToUpdate] = useState({});
+
     const navigate = useNavigate();
 
-    async function getData(){
+    async function getData() {
         const req = await fetch(enviroments.urlBackend + "client")
         const json = await req.json()
         setData(json.objModel)
+        Swal.close();
     }
-    
+
     const EditClient = (item) => {
         setOpen(true);
         setDataToUpdate(item)
@@ -43,9 +46,9 @@ const Client = () => {
         })
     }
 
-    function DateSchedule(item) {
+    const OpenMeetingForm = (item) => {
         navigate('/meetingForm', { state: { item } });
-      }
+    }
 
     const CreateClient = () => {
         setOpen(true);
@@ -68,45 +71,55 @@ const Client = () => {
         })
     }
 
-    useEffect(() => { 
+    useEffect(() => {
+        Swal.fire({
+            title: 'Cargando datos',
+            text: 'Por favor espere...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         getData();
-    }, [] ) 
+    }, [])
 
     const columns = [
-        { 
-            field: "id", 
+        {
+            field: "id",
             headerName: "ID Cliente"
         },
         {
             field: "clientDocumentNumber",
             headerName: "Numero Documento",
-            flex:1
+            flex: 1
         },
         {
             field: "clientName",
             headerName: "Nombres",
-            flex:1
+            flex: 1
         },
         {
             field: "clientLastname",
             headerName: "Apellidos",
-            flex:1
+            flex: 1
         },
         {
             field: "clientAddress",
             headerName: "Dirección",
-            flex:1
+            flex: 1
         },
         {
             field: "clientPhone",
             headerName: "Telefono",
-            flex:1
+            flex: 1
         },
         {
             field: "actions",
             headerName: "Acciones",
-            flex:1,
-            renderCell: ({row}) => {
+            flex: 1,
+            renderCell: ({ row }) => {
                 return (
                     <Box
                         display="grid"
@@ -119,14 +132,14 @@ const Client = () => {
                             justifyContent="center"
                             backgroundColor={
                                 colors.greenAccent[600]
-                                }
+                            }
                             borderRadius="4px"
                         >
                             <Button onClick={() => EditClient(row)}>
-                                <EditOutlinedIcon/>
+                                <EditOutlinedIcon />
                             </Button>
                         </Box>
-                        <Box
+                        {/* <Box
                             width="60%"
                             m="0"
                             p="1px"
@@ -134,13 +147,13 @@ const Client = () => {
                             justifyContent="center"
                             backgroundColor={
                                 colors.redAccent[400]
-                                }
+                            }
                             borderRadius="4px"
                         >
                             <Button>
-                                <PersonOffOutlinedIcon/>
+                                <PersonOffOutlinedIcon />
                             </Button>
-                        </Box>
+                        </Box> */}
                         <Box
                             width="60%"
                             m="0"
@@ -149,11 +162,11 @@ const Client = () => {
                             justifyContent="center"
                             backgroundColor={
                                 colors.blueAccent[400]
-                                }
+                            }
                             borderRadius="4px"
                         >
-                            <Button onClick={() => DateSchedule(row)}>
-                                <CalendarMonthOutlinedIcon/>
+                            <Button onClick={() => OpenMeetingForm(row)}>
+                                <CalendarMonthOutlinedIcon />
                             </Button>
                         </Box>
                     </Box>
@@ -171,15 +184,15 @@ const Client = () => {
         bgcolor: colors.blueAccent[900],
         border: '2px solid #000',
         boxShadow: 24,
-        borderRadius:'20px',
+        borderRadius: '20px',
         p: 4,
     };
-    
-        const [open, setOpen] =  React.useState(false);
-        const handleClose = () => {
-            setOpen(false);
-            getData();
-        }
+
+    const [open, setOpen] = React.useState(false);
+    const handleClose = () => {
+        setOpen(false);
+        getData();
+    }
 
     return (
         <Box m="20px">
@@ -192,8 +205,8 @@ const Client = () => {
                     </Typography>
                 </Button>
             </Box>
-            <Box 
-                m="40px 0 0 0" 
+            <Box
+                m="40px 0 0 0"
                 height="75vh"
                 sx={{
                     "& .MuiDataGrid-root": {
@@ -224,14 +237,14 @@ const Client = () => {
             <Box m="20px">
                 {/* <Button variant="contained" onClick={handleOpen}>Open modal</Button> */}
                 <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
                 >
-                  <Box sx={modalStyle}>
-                    <Form onClose={handleClose} formTypeAndData={{dataToUpdate,titlesForm}}/>
-                  </Box>
+                    <Box sx={modalStyle}>
+                        <Form onClose={handleClose} formTypeAndData={{ dataToUpdate, titlesForm }} />
+                    </Box>
                 </Modal>
             </Box>
         </Box>

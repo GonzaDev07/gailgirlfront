@@ -9,7 +9,6 @@ import Service from "./scenes/maintenance/service";
 import Team from "./scenes/maintenance/team/indexTeam";
 import PaymentMethod from "./scenes/maintenance/paymentMethod";
 import MeetingStatus from "./scenes/maintenance/meetingStatus";
-import Meeting from "./scenes/meeting";
 import MeetingForm from "./scenes/meeting/meetingForm";
 
 function App() {
