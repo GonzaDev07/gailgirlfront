@@ -36,6 +36,7 @@ const MeetingForm = () => {
     const [collaborators, setCollaborators] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [services, setServices] = useState([]);
+    const [selectedServices, setSelectedServices] = useState([]);
 
     const initialValues = {
         id: ""
@@ -78,7 +79,20 @@ const MeetingForm = () => {
         setPaymentMethod(event.target.value);
     };
 
+    const handleCheckboxChange = (service) => {
+        setSelectedServices((prev) => {
+            if (prev.some((s) => s.id === service.id)) {
+                // Si ya está seleccionado, lo removemos
+                return prev.filter((s) => s.id !== service.id);
+            }
+            // Si no está seleccionado, lo añadimos
+            return [...prev, service];
+        });
+    };
+
     const CreateMeetingAPI = (formData) => {
+
+        console.log(formData)
         axios.post(enviroments.urlBackend + 'meeting', formData)
             .then((response) => {
                 Alerts.SuccessAlert(
@@ -99,6 +113,7 @@ const MeetingForm = () => {
     }
 
     const handleFormSubmit = () => {
+
         const meetingData = {
             idClient: state.item.id,
             meetingDate: date.$d,
@@ -116,6 +131,8 @@ const MeetingForm = () => {
         GetPaymentMethodDataAPI();
         GetServicesDataAPI();
     }, [])
+
+    const totalPrice = selectedServices.reduce((acc, service) => acc + service.servicePrice, 0);
 
     const columns = [
         {
@@ -155,12 +172,13 @@ const MeetingForm = () => {
             field: "select",
             headerName: "Seleccionar",
             flex: 1,
-            renderCell: ({ row: { serviceEstimatedTime } }) => {
-                return (
-                    <Checkbox />
-                )
-            }
-        }
+            renderCell: ({ row }) => (
+                <Checkbox
+                    checked={selectedServices.some((s) => s.id === row.id)}
+                    onChange={() => handleCheckboxChange(row)}
+                />
+            ),
+        },
     ]
 
     return (
@@ -273,11 +291,13 @@ const MeetingForm = () => {
                                 display="grid"
                                 gap="30px"
                                 gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                alignItems="center" // Centrar contenido verticalmente
                             >
+                                {/* Tabla de servicios */}
                                 <Box
                                     height="30vh"
                                     sx={{
-                                        gridColumn: "span 2",
+                                        gridColumn: "span 2", // Ocupar las primeras dos columnas
                                         "& .MuiDataGrid-root": {
                                             border: "none",
                                         },
@@ -285,24 +305,100 @@ const MeetingForm = () => {
                                             borderBottom: "none",
                                         },
                                         "& .name-column--cell": {
-                                            color: colors.greenAccent[300]
+                                            color: colors.greenAccent[300],
                                         },
                                         "& .MuiDataGrid-columnHeaders": {
                                             backgroundColor: colors.blueAccent[700],
-                                            borderBottom: "none"
+                                            borderBottom: "none",
                                         },
                                         "& .MuiDataGrid-virtualScroller": {
-                                            backgroundColo: colors.primary[400]
+                                            backgroundColor: colors.primary[400],
                                         },
                                         "& .MuiDataGrid-footerContainer": {
                                             borderTop: "none",
-                                            backgroundColor: colors.blueAccent[700]
-                                        }
+                                            backgroundColor: colors.blueAccent[700],
+                                        },
                                     }}
                                 >
                                     <DataGrid rows={services} columns={columns} />
                                 </Box>
+
+                                {/* Resumen de servicios */}
+                                <Box
+                                    p="20px"
+                                    border={`1px solid ${colors.grey[300]}`} // Borde gris claro del tema
+                                    borderRadius="8px"
+                                    bgcolor={colors.primary[400]} // Fondo acorde al tema
+                                    boxShadow={`0px 2px 6px ${colors.grey[500]}`} // Sombra ligera del tema
+                                    sx={{
+                                        gridColumn: "span 2", // Ocupar las últimas dos columnas
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center", // Centrar verticalmente el contenido
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h3"
+                                        gutterBottom
+                                        fontWeight="bold"
+                                        sx={{ color: colors.grey[300], mb: 2 }}
+                                    >
+                                        Resumen de servicios
+                                    </Typography>
+                                    <Box>
+                                        {selectedServices.map((service) => (
+                                            <Box
+                                                key={service.id}
+                                                display="flex"
+                                                justifyContent="space-between"
+                                                sx={{
+                                                    mb: 1,
+                                                    borderBottom: `1px dashed ${colors.grey[300]}`,
+                                                    pb: 1,
+                                                }}
+                                            >
+                                                <Typography
+                                                    variant="body1"
+                                                    sx={{ color: colors.grey[100] }}
+                                                >
+                                                    {service.serviceName}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body1"
+                                                    fontWeight="bold"
+                                                    sx={{ color: colors.greenAccent[300] }}
+                                                >
+                                                    S/ {service.servicePrice}
+                                                </Typography>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                    <Box
+                                        display="flex"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        mt={3}
+                                        pt={2}
+                                        borderTop={`1px solid ${colors.primary[300]}`} // Separador para el total
+                                    >
+                                        <Typography
+                                            variant="h3"
+                                            fontWeight="bold"
+                                            sx={{ color: colors.grey[500] }}
+                                        >
+                                            Total
+                                        </Typography>
+                                        <Typography
+                                            variant="h2"
+                                            fontWeight="bold"
+                                            sx={{ color: colors.greenAccent[500] }}
+                                        >
+                                            S/ {totalPrice}
+                                        </Typography>
+                                    </Box>
+                                </Box>
                             </Box>
+
                         </Box>
                         <Box display="flex" justifyContent="end" mt="30px">
                             <Button type="submit" color="secondary" variant="contained">
